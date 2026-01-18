@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Construmator - Loading</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --pink-accent: #ff00ff;
+            --pink-light: #ff4dff;
+            --purple-dark: #6b2c91;
+            --purple-light: #9d4edd;
+            --dark-bg: #0f0f1e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark-bg);
+            color: #fff;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .loading-container {
+            text-align: center;
+            animation: fadeIn 0.8s ease-in;
+        }
+
+        .logo-container {
+            margin-bottom: 2rem;
+            animation: logoFloat 2s ease-in-out infinite;
+        }
+
+        .logo-img {
+            height: 150px;
+            width: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 0 30px rgba(255, 0, 255, 0.5));
+        }
+
+        .loading-text {
+            margin-top: 2rem;
+        }
+
+        .brand-name {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--purple-light);
+            margin-bottom: 0.5rem;
+            animation: textGlow 2s ease-in-out infinite;
+        }
+
+        .brand-subtitle {
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: var(--pink-light);
+            opacity: 0.9;
+        }
+
+        .loading-spinner {
+            margin-top: 3rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .spinner-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--pink-accent);
+            animation: dotBounce 1.4s ease-in-out infinite;
+            box-shadow: 0 0 10px rgba(255, 0, 255, 0.6);
+        }
+
+        .spinner-dot:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .spinner-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .spinner-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes logoFloat {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-15px);
+            }
+        }
+
+        @keyframes textGlow {
+            0%, 100% {
+                text-shadow: 0 0 10px rgba(157, 78, 221, 0.5);
+            }
+            50% {
+                text-shadow: 0 0 20px rgba(157, 78, 221, 0.8), 0 0 30px rgba(255, 0, 255, 0.4);
+            }
+        }
+
+        @keyframes dotBounce {
+            0%, 80%, 100% {
+                transform: translateY(0) scale(1);
+                opacity: 0.7;
+            }
+            40% {
+                transform: translateY(-20px) scale(1.2);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .logo-img {
+                height: 120px;
+            }
+
+            .brand-name {
+                font-size: 2.5rem;
+            }
+
+            .brand-subtitle {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-container">
+        <div class="logo-container">
+            <img src="src/images/Construmator-Logo.png" alt="Construmator Logo" class="logo-img">
+        </div>
+        <div class="loading-text">
+            <h1 class="brand-name">Construmator</h1>
+            <p class="brand-subtitle">Materials Estimator</p>
+        </div>
+        <div class="loading-spinner">
+            <div class="spinner-dot"></div>
+            <div class="spinner-dot"></div>
+            <div class="spinner-dot"></div>
+        </div>
+    </div>
+
+    <script>
+        // Redirect to rules-regulation.html after 3 seconds
+        setTimeout(function() {
+            window.location.href = 'rules-regulation.html';
+        }, 3000);
+    </script>
+</body>
+</html>
+

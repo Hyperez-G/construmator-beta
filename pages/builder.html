@@ -1,0 +1,2059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Construmator - 2D Builder</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <script src="/_sdk/data_sdk.js"></script>
+    <script src="/_sdk/element_sdk.js"></script>
+    
+    <style>
+        :root {
+            --pink-accent: #ff00ff;
+            --pink-light: #ff4dff;
+            --purple-dark: #6b2c91;
+            --purple-light: #9d4edd;
+            --blue-accent: #00d4ff;
+            --dark-bg: #0f0f1e;
+            --card-dark: #1a1a2e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark-bg);
+            color: #fff;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255, 0, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(157, 78, 221, 0.1) 0%, transparent 50%),
+                linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%);
+        }
+
+        /* Navbar */
+        .navbar {
+            background: rgba(15, 15, 30, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .navbar-brand:hover {
+            color: #fff !important;
+            text-decoration: none;
+            transform: none;
+        }
+
+        .logo-img {
+            height: 40px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .search-bar {
+            max-width: 300px;
+            position: relative;
+        }
+
+        .search-bar input {
+            background: rgba(26, 26, 46, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            padding: 0.6rem 1rem 0.6rem 2.5rem;
+            color: #fff;
+            width: 100%;
+            font-size: 0.9rem;
+        }
+
+        .search-bar input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--pink-accent);
+            box-shadow: 0 0 0 2px rgba(255, 0, 255, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.9rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8) !important;
+            font-weight: 500;
+            margin: 0 0.5rem;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--pink-accent) !important;
+        }
+
+        .btn-get-started {
+            background: rgba(26, 26, 46, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            padding: 0.6rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-get-started:hover {
+            background: var(--pink-accent);
+            border-color: var(--pink-accent);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 0, 255, 0.3);
+        }
+
+        .back-btn {
+            background: rgba(26, 26, 46, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            padding: 0.6rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .back-btn:hover {
+            background: var(--pink-accent);
+            border-color: var(--pink-accent);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        /* Main Content */
+        .builder-section {
+            padding: 120px 0 80px;
+            min-height: 100vh;
+        }
+
+        /* Cards */
+        .builder-card {
+            background: rgba(26, 26, 46, 0.8);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .builder-card:hover {
+            border-color: var(--pink-accent);
+            box-shadow: 0 10px 30px rgba(255, 0, 255, 0.2);
+        }
+
+        .builder-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #fff;
+        }
+
+        .builder-title-2d {
+            font-size: 2.5rem;
+            font-weight: 800;
+            text-align: center;
+            background: linear-gradient(135deg, var(--pink-accent), var(--purple-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .builder-title-2d::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--pink-accent), transparent);
+            border-radius: 2px;
+        }
+
+        .builder-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        /* Input Styles */
+        .builder-input {
+            background: rgba(15, 15, 30, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 0.75rem 1rem;
+            color: #fff;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .builder-input:focus {
+            outline: none;
+            border-color: var(--pink-accent);
+            box-shadow: 0 0 0 2px rgba(255, 0, 255, 0.2);
+            background: rgba(15, 15, 30, 0.95);
+        }
+
+        .builder-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Buttons */
+        .builder-btn {
+            background: linear-gradient(135deg, var(--pink-accent), var(--purple-light));
+            border: none;
+            color: #fff;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .builder-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 0, 255, 0.4);
+            color: #fff;
+        }
+
+        .btn-clear {
+            background: #dc2626;
+        }
+
+        .btn-clear:hover {
+            background: #b91c1c;
+        }
+
+        .btn-rotate {
+            background: var(--blue-accent);
+        }
+
+        /* Zoom button active state - Green */
+        #zoomToggle.active {
+            background: #16a34a !important;
+            border-color: #16a34a !important;
+            color: #fff !important;
+        }
+
+        #zoomToggle.active:hover {
+            background: #15803d !important;
+            border-color: #15803d !important;
+        }
+
+        #zoomToggle.active i {
+            color: #fff !important;
+        }
+
+        /* Delete button active state - Red */
+        #deleteToggle.active {
+            background: #dc2626 !important;
+            border-color: #dc2626 !important;
+            color: #fff !important;
+        }
+
+        #deleteToggle.active:hover {
+            background: #b91c1c !important;
+            border-color: #b91c1c !important;
+        }
+
+        #deleteToggle.active i {
+            color: #fff !important;
+        }
+
+        .btn-rotate:hover {
+            background: #00a8cc;
+        }
+
+        /* Material Palette */
+        .material-palette {
+            background: rgba(15, 15, 30, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #fff;
+            font-weight: 500;
+        }
+
+        .material-palette:hover {
+            border-color: var(--pink-accent);
+            background: rgba(26, 26, 46, 0.9);
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(255, 0, 255, 0.2);
+        }
+
+        .material-palette.ring-4 {
+            border-color: var(--pink-accent);
+            box-shadow: 0 0 0 4px rgba(255, 0, 255, 0.3);
+        }
+
+        .material-section-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--pink-accent);
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* 2D Area */
+        .true-2d-area {
+            background: linear-gradient(45deg, #0f0f23, #1a1a2e);
+            border: 3px solid var(--pink-accent);
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+            min-height: 600px;
+            perspective: 1000px;
+            transform-style: flat;
+            user-select: none;
+        }
+
+        .true-2d-area.panning {
+            cursor: grabbing !important;
+        }
+
+        #build2DCanvas {
+            background-image: 
+                linear-gradient(rgba(255, 0, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 0, 255, 0.1) 1px, transparent 1px);
+            background-size: 40px 40px;
+            background-position: 0 0;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(40px, 40px); }
+        }
+
+        .true-2d-block {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid rgba(0,0,0,0.4);
+            background: currentColor;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            z-index: 10;
+        }
+
+        .true-2d-block:hover {
+            transform: scale(1.1);
+            z-index: 1000;
+            box-shadow: 0 4px 8px rgba(255, 0, 255, 0.5);
+        }
+
+        /* Delete mode cursor */
+        .true-2d-area.delete-mode {
+            cursor: not-allowed !important;
+        }
+
+        .true-2d-area.delete-mode .true-2d-block {
+            cursor: pointer;
+        }
+
+        .true-2d-area.delete-mode .true-2d-block:hover {
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.8);
+            border-color: #dc2626;
+        }
+
+        /* Door styling - square like other blocks with Font Awesome icon */
+        .true-2d-block[data-type="door"] {
+            width: 40px;
+            height: 40px;
+            border-radius: 4px;
+            border: 2px solid rgba(0, 0, 0, 0.4);
+            background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .true-2d-block[data-type="door"]:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 8px rgba(22, 163, 74, 0.5);
+        }
+
+        .true-2d-block[data-type="door"] i {
+            display: block !important;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 20px;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Floor opacity for inactive floors */
+        .true-2d-block[data-floor="1"].inactive-floor {
+            opacity: 0.1;
+            pointer-events: none;
+            cursor: default;
+        }
+
+        .true-2d-block[data-floor="2"].inactive-floor {
+            opacity: 0.1;
+            pointer-events: none;
+            cursor: default;
+        }
+
+        .stacked-1 { transform: translateY(-40px); z-index: 2; }
+        .stacked-2 { transform: translateY(-80px); z-index: 3; }
+        .stacked-3 { transform: translateY(-120px); z-index: 4; }
+        .stacked-4 { transform: translateY(-160px); z-index: 5; }
+        .stacked-5 { transform: translateY(-200px); z-index: 6; }
+
+        .build-placeholder {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            z-index: 10;
+            color: rgba(255, 255, 255, 0.8);
+            pointer-events: none;
+        }
+
+        .build-placeholder i {
+            font-size: 4rem;
+            color: var(--pink-accent);
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        /* Stats Cards */
+        .stats-card {
+            background: rgba(15, 15, 30, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .stats-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--pink-accent);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stats-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .stats-value.cost {
+            font-size: 1.5rem;
+            color: var(--blue-accent);
+        }
+
+        /* Results Page */
+        .results-card {
+            background: rgba(26, 26, 46, 0.8);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .results-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .results-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .results-item:last-child {
+            border-bottom: none;
+        }
+
+        .results-label {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .results-value {
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .results-value.total {
+            font-size: 1.8rem;
+            color: var(--blue-accent);
+        }
+
+        .results-value.positive {
+            color: #10b981;
+        }
+
+        .results-value.negative {
+            color: #ef4444;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Toast Notification */
+        .toast-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(26, 26, 46, 0.95);
+            border: 2px solid var(--pink-accent);
+            color: #fff;
+            padding: 1rem 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(255, 0, 255, 0.3);
+            z-index: 10000;
+            animation: slideIn 0.3s ease-out;
+            font-weight: 500;
+            max-width: 300px;
+        }
+
+        .toast-notification.error {
+            border-color: #dc2626;
+            background: rgba(220, 38, 38, 0.2);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(120%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Navigation Bar */
+        .builder-navbar {
+            background: rgba(26, 26, 46, 0.8);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .navbar-section {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .navbar-section-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--pink-accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.25rem;
+            opacity: 0.8;
+        }
+
+        .navbar-section-buttons {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-action-btn {
+            background: rgba(15, 15, 30, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            padding: 0.6rem 1.25rem;
+            border-radius: 15px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-action-btn:hover {
+            background: var(--pink-accent);
+            border-color: var(--pink-accent);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 0, 255, 0.3);
+        }
+
+        .nav-action-btn.active {
+            background: var(--pink-accent);
+            border-color: var(--pink-accent);
+        }
+
+        /* Floor Selector */
+        .floor-selector {
+            background: rgba(15, 15, 30, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 0.6rem 1rem;
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .floor-selector:focus {
+            outline: none;
+            border-color: var(--pink-accent);
+            box-shadow: 0 0 0 2px rgba(255, 0, 255, 0.2);
+        }
+
+        .floor-selector option {
+            background: rgba(26, 26, 46, 0.95);
+            color: #fff;
+        }
+
+        /* Modal Styles */
+        .modal-content {
+            background: rgba(26, 26, 46, 0.95);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            color: #fff;
+        }
+
+        .modal-header {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .btn-close {
+            filter: invert(1);
+            opacity: 0.8;
+        }
+
+        .btn-close:hover {
+            opacity: 1;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .modal-search-bar {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-search-bar input {
+            width: 100%;
+            background: rgba(15, 15, 30, 0.8);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 0.75rem 1rem 0.75rem 3rem;
+            color: #fff;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+
+        .modal-search-bar input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .modal-search-bar input:focus {
+            outline: none;
+            border-color: var(--pink-accent);
+            box-shadow: 0 0 0 3px rgba(255, 0, 255, 0.2);
+            background: rgba(15, 15, 30, 0.95);
+        }
+
+        .modal-search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 1rem;
+        }
+
+        .modal-material-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .modal-material-item {
+            background: rgba(26, 26, 46, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: inherit;
+            color: inherit;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        .modal-material-item:focus {
+            outline: none;
+            border-color: var(--pink-accent);
+            box-shadow: 0 0 0 2px rgba(255, 0, 255, 0.2);
+        }
+
+        .modal-material-item:hover {
+            border-color: var(--pink-accent);
+            background: rgba(255, 0, 255, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 0, 255, 0.3);
+        }
+
+        .modal-material-item.selected {
+            border-color: var(--pink-accent);
+            background: rgba(255, 0, 255, 0.2);
+            box-shadow: 0 0 15px rgba(255, 0, 255, 0.4);
+        }
+
+        .modal-material-icon {
+            width: 24px;
+            height: 24px;
+            display: inline-block;
+            border-radius: 4px;
+            border: 2px solid rgba(0, 0, 0, 0.2);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-material-name {
+            font-weight: 500;
+            color: #fff;
+            font-size: 0.9rem;
+        }
+
+        .modal-material-cost {
+            color: var(--blue-accent);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-left: 0.25rem;
+        }
+
+        /* Custom Scrollbar */
+        .modal-body::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .modal-body::-webkit-scrollbar-track {
+            background: rgba(15, 15, 30, 0.5);
+            border-radius: 10px;
+        }
+
+        .modal-body::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--pink-accent), var(--purple-light));
+            border-radius: 10px;
+            border: 2px solid rgba(15, 15, 30, 0.5);
+        }
+
+        .modal-body::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, var(--pink-light), var(--purple-light));
+        }
+
+        /* Firefox scrollbar */
+        .modal-body {
+            scrollbar-width: thin;
+            scrollbar-color: var(--pink-accent) rgba(15, 15, 30, 0.5);
+        }
+
+        .modal-section-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--pink-accent);
+            margin: 1.5rem 0 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .modal-section-title:first-child {
+            margin-top: 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .builder-section {
+                padding: 100px 0 60px;
+            }
+
+            .builder-navbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .builder-navbar-left,
+            .builder-navbar-right {
+                justify-content: center;
+            }
+
+            .modal-material-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="animated-bg"></div>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="../home.html">
+                <img src="../src/images/Construmator-Logo.png" alt="Construmator Logo" class="logo-img">
+                <span>CONSTRUMATOR</span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" style="border: 1px solid rgba(255,255,255,0.3); color: #fff;">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <!-- Navigation Links -->
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link" href="../home.html#home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../home.html#about">About Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../rules-regulation.html">Rules & Guidelines</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../home.html#how-it-works">How It Works</a>
+                    </li>
+                    <li class="nav-item ms-2" id="authNavItem">
+                        <a href="login.html" class="btn btn-get-started" style="text-decoration: none; margin-right: 0.5rem;">
+                            <i class="fas fa-sign-in-alt me-2"></i>Login
+                        </a>
+                    </li>
+                    <li class="nav-item ms-2">
+                        <a href="features.html" class="back-btn">
+                            <i class="fas fa-arrow-left"></i>
+                            <span>Return to Features</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Builder Section -->
+    <section class="builder-section">
+        <div class="container">
+            <!-- Page 12: 2D Builder main -->
+            <div id="page12" class="page">
+                <!-- Header Card -->
+                <div class="builder-card">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <h1 class="builder-title">2D Builder</h1>
+                            <p class="builder-subtitle">
+                                Place blocks, doors, windows, roofing and more on a simple 2D grid.
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center gap-3 justify-content-md-end">
+                                <div class="position-relative" style="max-width: 200px;">
+                                    <span class="position-absolute" style="left: 15px; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,0.5);">₱</span>
+                                    <input type="number" id="builder2DBudget" class="builder-input w-100 ps-5" placeholder="1,000,000" />
+                                </div>
+                                <button onclick="finalize2DProject()" class="builder-btn">
+                                    Done
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2D Building Area -->
+                <div class="builder-card">
+                    <h3 class="builder-title-2d">2D Construction Area</h3>
+
+                    <!-- Navigation Bar -->
+                    <div class="builder-navbar mb-4">
+                        <!-- Builder Tools Section -->
+                        <div class="navbar-section">
+                            <div class="navbar-section-title">Builder Tools</div>
+                            <div class="navbar-section-buttons">
+                                <button class="nav-action-btn" data-bs-toggle="modal" data-bs-target="#materialsModal">
+                                    <i class="fas fa-box"></i>
+                                    <span>Select Material</span>
+                                </button>
+                                <button id="deleteToggle" onclick="toggleDeleteMode()" class="nav-action-btn" title="Toggle Delete Mode">
+                                    <i class="fas fa-eraser"></i>
+                                    <span>Delete Mode</span>
+                                </button>
+                                <button id="zoomToggle" onclick="toggleZoom()" class="nav-action-btn" title="Toggle Zoom">
+                                    <i class="fas fa-eye"></i>
+                                    <span>View Mode</span>
+                                </button>
+                                <select id="floorSelector" class="floor-selector" onchange="switchFloor()">
+                                    <option value="1">1st Floor</option>
+                                    <option value="2">2nd Floor</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Save Tools Section -->
+                        <div class="navbar-section">
+                            <div class="navbar-section-title">Save Tools</div>
+                            <div class="navbar-section-buttons">
+                                <button onclick="saveBuilderProjectToDatabase()" class="nav-action-btn" style="background: var(--blue-accent); border-color: var(--blue-accent);">
+                                    <i class="fas fa-save"></i>
+                                    <span>Save Project</span>
+                                </button>
+                                <button onclick="showSavedProjectsModal()" class="nav-action-btn" style="background: var(--purple-light); border-color: var(--purple-light);">
+                                    <i class="fas fa-folder-open"></i>
+                                    <span>My Projects</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Import/Export Tools Section -->
+                        <div class="navbar-section">
+                            <div class="navbar-section-title">Import/Export</div>
+                            <div class="navbar-section-buttons">
+                                <button onclick="saveProjectToJSON()" class="nav-action-btn" style="background: rgba(15, 15, 30, 0.8); border-color: rgba(255, 255, 255, 0.1);">
+                                    <i class="fas fa-download"></i>
+                                    <span>Export JSON</span>
+                                </button>
+                                <button onclick="loadProjectFromJSON()" class="nav-action-btn" style="background: rgba(15, 15, 30, 0.8); border-color: rgba(255, 255, 255, 0.1);">
+                                    <i class="fas fa-upload"></i>
+                                    <span>Import JSON</span>
+                                </button>
+                                <button onclick="clear2DBuild()" class="nav-action-btn btn-clear">
+                                    <i class="fas fa-trash"></i>
+                                    <span>Clear</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2D area -->
+                    <div id="build2DArea" class="true-2d-area" style="width: 100%; height: 600px; overflow: hidden; position: relative; cursor: grab;">
+                        <!-- Large canvas container for map-like navigation -->
+                        <div id="build2DCanvas" style="position: absolute; width: 5000px; height: 5000px; top: 0; left: 0; transform-origin: 0 0;">
+                            <div class="build-placeholder" id="build2DPlaceholder">
+                                <div>
+                                    <i class="fas fa-cube"></i>
+                                    <p class="fw-bold mb-1">2D construction zone</p>
+                                    <p class="small">Click "Select Material" to choose a material, then click here to place it.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Stats -->
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <div class="stats-card">
+                            <div class="stats-title">Materials used</div>
+                            <div id="materials2DCount" class="stats-value">
+                                No materials placed
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stats-card">
+                            <div class="stats-title">Building stats</div>
+                            <div id="building2DStats" class="stats-value">
+                                Size: 0×0 · Height: 0
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stats-card">
+                            <div class="stats-title">Live cost</div>
+                            <div id="live2DCost" class="stats-value cost">
+                                ₱0
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page 13: 2D Project Results -->
+            <div id="page13" class="page hidden">
+                <div class="builder-card">
+                    <a href="#" onclick="showPage('page12'); return false;" class="back-btn mb-4 d-inline-flex">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Back to 2D builder</span>
+                    </a>
+
+                    <h1 class="builder-title text-center mb-5">2D project summary</h1>
+
+                    <div class="row g-4">
+                        <!-- Materials Used -->
+                        <div class="col-md-6">
+                            <div class="results-card">
+                                <h2 class="results-title">
+                                    <span>🏗️</span>
+                                    <span>Materials used</span>
+                                </h2>
+                                <div id="final2DMaterials">
+                                    <!-- Populated by JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Cost Summary -->
+                        <div class="col-md-6">
+                            <div class="results-card">
+                                <h2 class="results-title">
+                                    <span>💰</span>
+                                    <span>Cost summary</span>
+                                </h2>
+                                <div class="results-item">
+                                    <span class="results-label">Materials cost</span>
+                                    <span id="final2DMaterialsCost" class="results-value">₱0</span>
+                                </div>
+                                <div class="results-item">
+                                    <span class="results-label">Labor cost (45%)</span>
+                                    <span id="final2DLaborCost" class="results-value">₱0</span>
+                                </div>
+                                <div class="results-item">
+                                    <span class="results-label">Total cost</span>
+                                    <span id="final2DTotalCost" class="results-value total">₱0</span>
+                                </div>
+                                <div class="results-item">
+                                    <span class="results-label">Your budget</span>
+                                    <span id="final2DBudget" class="results-value">₱0</span>
+                                </div>
+                                <div class="results-item">
+                                    <span class="results-label">Remaining</span>
+                                    <span id="final2DRemaining" class="results-value">₱0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-5">
+                        <button onclick="save2DProject()" class="builder-btn px-5 py-3">
+                            💾 Save 2D project
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Saved Projects Modal -->
+    <div class="modal fade" id="savedProjectsModal" tabindex="-1" aria-labelledby="savedProjectsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="savedProjectsModalLabel">
+                        <i class="fas fa-folder me-2"></i>My Saved Projects
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="savedProjectsList">
+                        <div class="text-center py-5">
+                            <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--pink-accent);"></i>
+                            <p class="mt-3" style="color: rgba(255, 255, 255, 0.7);">Loading projects...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Materials Modal -->
+    <div class="modal fade" id="materialsModal" tabindex="-1" aria-labelledby="materialsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="materialsModalLabel">
+                        <i class="fas fa-box me-2"></i>Select Material
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Search Bar -->
+                    <div class="modal-search-bar">
+                        <i class="fas fa-search modal-search-icon"></i>
+                        <input type="text" id="materialSearch" placeholder="Search materials..." onkeyup="filterMaterials()">
+                    </div>
+
+                    <!-- Wall Materials -->
+                    <h6 class="modal-section-title">For walls</h6>
+                    <div class="modal-material-grid" data-section="walls">
+                        <button type="button" class="modal-material-item" data-type="block" data-cost="20" data-name="Hollow block" onclick="selectMaterialFromModal('block', 20)">
+                            <span class="modal-material-icon" style="background-color: #dc2626;"></span>
+                            <span class="modal-material-name">Hollow block</span>
+                            <span class="modal-material-cost">₱20</span>
+                        </button>
+                        <button type="button" class="modal-material-item" data-type="steel" data-cost="300" data-name="Steel" onclick="selectMaterialFromModal('steel', 300)">
+                            <span class="modal-material-icon" style="background-color: #6b7280;"></span>
+                            <span class="modal-material-name">Steel</span>
+                            <span class="modal-material-cost">₱300</span>
+                        </button>
+                    </div>
+
+                    <!-- Roofing Materials -->
+                    <h6 class="modal-section-title">Roofing</h6>
+                    <div class="modal-material-grid" data-section="roofing">
+                        <button type="button" class="modal-material-item" data-type="roof" data-cost="180" data-name="Roof" onclick="selectMaterialFromModal('roof', 180)">
+                            <span class="modal-material-icon" style="background-color: #059669;"></span>
+                            <span class="modal-material-name">Roof</span>
+                            <span class="modal-material-cost">₱180</span>
+                        </button>
+                    </div>
+
+                    <!-- Flooring Materials -->
+                    <h6 class="modal-section-title">Flooring</h6>
+                    <div class="modal-material-grid" data-section="flooring">
+                        <button type="button" class="modal-material-item" data-type="tile" data-cost="300" data-name="Tile" onclick="selectMaterialFromModal('tile', 300)">
+                            <span class="modal-material-icon" style="background-color: #3b82f6;"></span>
+                            <span class="modal-material-name">Tile</span>
+                            <span class="modal-material-cost">₱300</span>
+                        </button>
+                        <button type="button" class="modal-material-item" data-type="wood" data-cost="650" data-name="Wood slab" onclick="selectMaterialFromModal('wood', 650)">
+                            <span class="modal-material-icon" style="background-color: #92400e;"></span>
+                            <span class="modal-material-name">Wood slab</span>
+                            <span class="modal-material-cost">₱650</span>
+                        </button>
+                    </div>
+
+                    <!-- Openings -->
+                    <h6 class="modal-section-title">Openings</h6>
+                    <div class="modal-material-grid" data-section="openings">
+                        <button type="button" class="modal-material-item" data-type="door" data-cost="8000" data-name="Door" onclick="selectMaterialFromModal('door', 8000)">
+                            <span class="modal-material-icon" style="background-color: #16a34a;"></span>
+                            <span class="modal-material-name">Door</span>
+                            <span class="modal-material-cost">₱8,000</span>
+                        </button>
+                        <button type="button" class="modal-material-item" data-type="window" data-cost="5000" data-name="Window" onclick="selectMaterialFromModal('window', 5000)">
+                            <span class="modal-material-icon" style="background-color: #06b6d4;"></span>
+                            <span class="modal-material-name">Window</span>
+                            <span class="modal-material-cost">₱5,000</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- App JS -->
+    <script src="../script/builder.js"></script>
+    
+    <!-- Auth JS -->
+    <script src="../script/auth.js"></script>
+    
+    <script>
+        // Update navigation based on login status
+        function updateAuthNav() {
+            const authNavItem = document.getElementById('authNavItem');
+            if (authNavItem && window.auth) {
+                if (window.auth.isLoggedIn()) {
+                    const user = window.auth.getCurrentUser();
+                    const displayName = user.name || user.email;
+                    authNavItem.innerHTML = `
+                        <div class="dropdown">
+                            <button class="btn btn-get-started dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="margin-right: 0.5rem; font-size: 0.85rem; padding: 0.5rem 1rem;">
+                                <i class="fas fa-user me-1" style="font-size: 0.8rem;"></i><span>${displayName}</span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown" style="background: rgba(26, 26, 46, 0.95); border: 1px solid rgba(255, 255, 255, 0.1); min-width: 200px;">
+                                <li class="px-3 py-2" style="border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                                    <small class="text-white-50">Signed in as</small><br>
+                                    <strong class="text-white">${user.name || user.email}</strong>
+                                </li>
+                                ${user.userType === 'admin' ? '<li><a class="dropdown-item text-white" href="admin/admin.html" style="color: rgba(255, 255, 255, 0.8) !important; background-color: transparent !important;" onmouseover="this.style.backgroundColor=\'transparent\'" onmouseout="this.style.backgroundColor=\'transparent\'"><i class="fas fa-shield-alt me-2"></i>Admin Panel</a></li>' : ''}
+                                <li><a class="dropdown-item text-white" href="#" style="color: rgba(255, 255, 255, 0.8) !important; background-color: transparent !important;" onmouseover="this.style.backgroundColor='transparent'" onmouseout="this.style.backgroundColor='transparent'"><i class="fas fa-folder me-2"></i>My Projects</a></li>
+                                <li><hr class="dropdown-divider" style="border-color: rgba(255, 255, 255, 0.1);"></li>
+                                <li><a class="dropdown-item text-white" href="#" onclick="window.auth.logout(); return false;" style="color: rgba(255, 255, 255, 0.8) !important; background-color: transparent !important;" onmouseover="this.style.backgroundColor='transparent'" onmouseout="this.style.backgroundColor='transparent'"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                            </ul>
+                        </div>
+                    `;
+                }
+            }
+        }
+
+        // Initialize auth navigation
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', updateAuthNav);
+        } else {
+            updateAuthNav();
+        }
+    </script>
+    
+    <script>
+        // Override showToast to use SweetAlert2 for errors, regular toast for others
+        const originalShowToast = window.showToast;
+        window.showToast = function(message, type = 'success') {
+            // Use SweetAlert2 for error notifications
+            if (type === 'error') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: message.replace('🔍', '').replace('🧱', '').trim(),
+                    timer: 2000,
+                    timerProgressBar: true,
+                    showConfirmButton: false,
+                    toast: true,
+                    position: 'bottom-end',
+                    background: 'rgba(26, 26, 46, 0.95)',
+                    color: '#fff',
+                    iconColor: '#dc2626'
+                });
+                return;
+            }
+            
+            // Use regular toast for success messages
+            const toast = document.createElement('div');
+            toast.className = `toast-notification ${type === 'error' ? 'error' : ''}`;
+            toast.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <span class="me-2">${type === 'error' ? '❌' : '✅'}</span>
+                    <span>${message}</span>
+                </div>
+            `;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideIn 0.3s ease-out reverse';
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        };
+
+        // Function to filter materials based on search
+        function filterMaterials() {
+            const searchInput = document.getElementById('materialSearch');
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            const materialItems = document.querySelectorAll('.modal-material-item');
+            const sectionTitles = document.querySelectorAll('.modal-section-title');
+            
+            let hasVisibleItems = false;
+            
+            materialItems.forEach(item => {
+                const materialName = item.getAttribute('data-name').toLowerCase();
+                const materialType = item.getAttribute('data-type').toLowerCase();
+                const materialCost = item.getAttribute('data-cost');
+                
+                // Check if search term matches name, type, or cost
+                const matches = materialName.includes(searchTerm) || 
+                               materialType.includes(searchTerm) || 
+                               materialCost.includes(searchTerm);
+                
+                if (matches || searchTerm === '') {
+                    item.style.display = '';
+                    hasVisibleItems = true;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+            
+            // Hide/show section titles based on visible items
+            sectionTitles.forEach(title => {
+                const section = title.nextElementSibling;
+                if (section && section.classList.contains('modal-material-grid')) {
+                    const visibleItems = Array.from(section.querySelectorAll('.modal-material-item'))
+                        .filter(item => item.style.display !== 'none');
+                    
+                    if (visibleItems.length === 0 && searchTerm !== '') {
+                        title.style.display = 'none';
+                        section.style.display = 'none';
+                    } else {
+                        title.style.display = '';
+                        section.style.display = '';
+                    }
+                }
+            });
+        }
+
+        // Function to select material from modal
+        function selectMaterialFromModal(type, cost) {
+            // Close the modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('materialsModal'));
+            if (modal) {
+                modal.hide();
+            }
+            
+            // Select the material
+            if (typeof selectMaterial === 'function') {
+                selectMaterial(type, cost);
+            } else {
+                // Fallback if selectMaterial doesn't exist
+                selectedMaterialType = type;
+                placementMode = true;
+                
+                // Update build area cursor and message
+                const buildArea = document.getElementById('build2DArea');
+                if (buildArea) {
+                    buildArea.style.cursor = 'crosshair';
+                    const placeholder = document.getElementById('build2DPlaceholder');
+                    if (placeholder && building2D.length === 0) {
+                        placeholder.innerHTML = `
+                            <div class="text-white text-center">
+                                <i class="${materialIcons[type] || 'fas fa-cube'}" style="font-size: 4rem; color: var(--pink-accent); display: block; margin-bottom: 1rem;"></i>
+                                <p class="fw-bold mb-2" style="font-size: 1.2rem;">Click to place ${type.toUpperCase()}</p>
+                                <p class="small" style="opacity: 0.9;">Cost: ₱${cost} each</p>
+                            </div>
+                        `;
+                    }
+                }
+            }
+            
+            // Update modal items to show selected state
+            document.querySelectorAll('.modal-material-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            const selectedItem = document.querySelector(`.modal-material-item[data-type="${type}"]`);
+            if (selectedItem) {
+                selectedItem.classList.add('selected');
+            }
+            
+            // Update the "Select Material" button to show selected material
+            const selectBtn = document.querySelector('[data-bs-target="#materialsModal"]');
+            if (selectBtn) {
+                const icon = selectBtn.querySelector('i');
+                const span = selectBtn.querySelector('span');
+                if (span) {
+                    span.textContent = `Selected: ${type.charAt(0).toUpperCase() + type.slice(1)}`;
+                }
+                selectBtn.classList.add('active');
+            }
+            
+            // Show notification
+            Swal.fire({
+                icon: 'success',
+                title: 'Material Selected',
+                text: `${type.charAt(0).toUpperCase() + type.slice(1)} selected! Click on the construction area to place it.`,
+                timer: 2000,
+                timerProgressBar: true,
+                showConfirmButton: false,
+                toast: true,
+                position: 'bottom-end',
+                background: 'rgba(26, 26, 46, 0.95)',
+                color: '#fff',
+                iconColor: '#ff00ff'
+            });
+        }
+
+        // Override selectMaterial to use Bootstrap-compatible classes
+        const originalSelectMaterial = window.selectMaterial;
+        window.selectMaterial = function(type, cost) {
+            selectedMaterialType = type;
+            placementMode = true;
+            
+            // Update build area cursor and message
+            const buildArea = document.getElementById('build2DArea');
+            if (buildArea) {
+                buildArea.style.cursor = 'crosshair';
+                const placeholder = document.getElementById('build2DPlaceholder');
+                if (placeholder && building2D.length === 0) {
+                    placeholder.innerHTML = `
+                        <div class="text-white text-center">
+                            <i class="${materialIcons[type] || 'fas fa-cube'}" style="font-size: 4rem; color: var(--pink-accent); display: block; margin-bottom: 1rem;"></i>
+                            <p class="fw-bold mb-2" style="font-size: 1.2rem;">Click to place ${type.toUpperCase()}</p>
+                            <p class="small" style="opacity: 0.9;">Cost: ₱${cost} each</p>
+                        </div>
+                    `;
+                }
+            }
+            
+            // Update the "Select Material" button to show selected material
+            const selectBtn = document.querySelector('[data-bs-target="#materialsModal"]');
+            if (selectBtn) {
+                const span = selectBtn.querySelector('span');
+                if (span) {
+                    span.textContent = `Selected: ${type.charAt(0).toUpperCase() + type.slice(1)}`;
+                }
+                selectBtn.classList.add('active');
+            }
+        };
+
+        // Override finalize2DProject to use Bootstrap classes
+        const originalFinalize2DProject = window.finalize2DProject;
+        window.finalize2DProject = function() {
+            const budget = parseFloat(document.getElementById('builder2DBudget').value);
+            if (!budget) {
+                showToast('Please enter your budget first', 'error');
+                return;
+            }
+
+            if (Object.keys(materials2D).length === 0) {
+                showToast('Please place some materials first', 'error');
+                return;
+            }
+
+            // Calculate costs
+            let materialsCost = 0;
+            Object.entries(materials2D).forEach(([type, count]) => {
+                materialsCost += (materialCosts[type] || 0) * count;
+            });
+            
+            const laborCost = materialsCost * 0.4;
+            const totalCost = materialsCost + laborCost;
+            const remaining = budget - totalCost;
+
+            // Display final results with Bootstrap classes
+            const materialsHtml = Object.entries(materials2D)
+                .map(([type, count]) => `
+                    <div class="results-item">
+                        <span class="results-label d-flex align-items-center gap-2">
+                            <i class="${materialIcons[type] || 'fas fa-cube'}"></i>
+                            <span>${type}</span>
+                        </span>
+                        <span class="results-value">${count} pcs</span>
+                    </div>
+                `).join('');
+
+            document.getElementById('final2DMaterials').innerHTML = materialsHtml;
+            document.getElementById('final2DMaterialsCost').textContent = `₱${materialsCost.toLocaleString()}`;
+            document.getElementById('final2DLaborCost').textContent = `₱${laborCost.toLocaleString()}`;
+            document.getElementById('final2DTotalCost').textContent = `₱${totalCost.toLocaleString()}`;
+            document.getElementById('final2DBudget').textContent = `₱${budget.toLocaleString()}`;
+            
+            const remainingElement = document.getElementById('final2DRemaining');
+            remainingElement.textContent = `₱${remaining.toLocaleString()}`;
+            remainingElement.className = remaining >= 0 ? 'results-value positive' : 'results-value negative';
+
+            showPage('page13');
+        };
+
+        // Page navigation function
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.add('hidden');
+            });
+            const targetPage = document.getElementById(pageId);
+            if (targetPage) {
+                targetPage.classList.remove('hidden');
+            }
+        }
+
+        // Fix material icon mapping - app.js uses 'hollowblock' but data-type is 'block'
+        if (typeof materialIcons !== 'undefined') {
+            materialIcons.block = materialIcons.hollowblock || 'fa-solid fa-brick-wall';
+        }
+
+        // Zoom Management (global variable)
+        window.zoomEnabled = false;
+
+        // Toggle zoom function
+        function toggleZoom() {
+            const zoomBtn = document.getElementById('zoomToggle');
+            const buildArea = document.getElementById('build2DArea');
+            
+            window.zoomEnabled = !window.zoomEnabled;
+            
+            if (window.zoomEnabled) {
+                zoomBtn.classList.add('active');
+                zoomBtn.style.backgroundColor = '#16a34a';
+                zoomBtn.style.borderColor = '#16a34a';
+                zoomBtn.style.color = '#fff';
+                zoomBtn.querySelector('i').className = 'fas fa-eye-slash';
+                zoomBtn.querySelector('i').style.color = '#fff';
+                const span = zoomBtn.querySelector('span');
+                if (span) span.textContent = 'View Mode';
+                zoomBtn.title = 'Disable View Mode';
+                if (buildArea) {
+                    buildArea.style.cursor = 'zoom-in';
+                    buildArea.style.pointerEvents = 'auto';
+                }
+            } else {
+                zoomBtn.classList.remove('active');
+                zoomBtn.style.backgroundColor = '';
+                zoomBtn.style.borderColor = '';
+                zoomBtn.style.color = '';
+                zoomBtn.querySelector('i').className = 'fas fa-eye';
+                zoomBtn.querySelector('i').style.color = '';
+                const span = zoomBtn.querySelector('span');
+                if (span) span.textContent = 'View Mode';
+                zoomBtn.title = 'Enable View Mode';
+                if (buildArea) {
+                    buildArea.style.cursor = 'crosshair';
+                    buildArea.style.pointerEvents = 'auto';
+                }
+            }
+        }
+
+        // Reset material selection button when modal is closed without selection
+        document.getElementById('materialsModal').addEventListener('hidden.bs.modal', function () {
+            // Only reset if no material is currently selected
+            if (!selectedMaterialType) {
+                const selectBtn = document.querySelector('[data-bs-target="#materialsModal"]');
+                if (selectBtn) {
+                    const span = selectBtn.querySelector('span');
+                    if (span) {
+                        span.textContent = 'Select Material';
+                    }
+                    selectBtn.classList.remove('active');
+                }
+            }
+            
+            // Reset search bar
+            const searchInput = document.getElementById('materialSearch');
+            if (searchInput) {
+                searchInput.value = '';
+                filterMaterials();
+            }
+        });
+
+        // Override clear2DBuild to use SweetAlert2
+        const originalClear2DBuild = window.clear2DBuild;
+        window.clear2DBuild = function() {
+            Swal.fire({
+                title: 'Clear Construction?',
+                text: 'Are you sure you want to clear all placed materials?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc2626',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'Yes, clear it!',
+                cancelButtonText: 'Cancel',
+                background: 'rgba(26, 26, 46, 0.95)',
+                color: '#fff',
+                iconColor: '#ff00ff'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Call original function
+                    if (originalClear2DBuild) {
+                        originalClear2DBuild();
+                    }
+                    
+                    // Reset material selection
+                    selectedMaterialType = null;
+                    placementMode = false;
+                    const selectBtn = document.querySelector('[data-bs-target="#materialsModal"]');
+                    if (selectBtn) {
+                        const span = selectBtn.querySelector('span');
+                        if (span) {
+                            span.textContent = 'Select Material';
+                        }
+                        selectBtn.classList.remove('active');
+                    }
+                    
+                    // Reset placeholder
+                    const placeholder = document.getElementById('build2DPlaceholder');
+                    if (placeholder) {
+                        placeholder.innerHTML = `
+                            <div>
+                                <i class="fas fa-cube"></i>
+                                <p class="fw-bold mb-1 ">2D construction zone</p>
+                                <p class="small">Click "Select Material" to choose a material, then click here to place it.</p>
+                            </div>
+                        `;
+                    }
+                    
+                    // Show success notification
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Cleared!',
+                        text: 'Construction area has been cleared.',
+                        timer: 2000,
+                        timerProgressBar: true,
+                        showConfirmButton: false,
+                        toast: true,
+                        position: 'bottom-end',
+                        background: 'rgba(26, 26, 46, 0.95)',
+                        color: '#fff',
+                        iconColor: '#10b981'
+                    });
+                }
+            });
+        };
+
+
+        // Override place2DMaterial to check zoom state
+        const originalPlace2DMaterial = window.place2DMaterial;
+        window.place2DMaterial = function(type, x, y) {
+            // Check if zoom is enabled - if so, don't allow block placement
+            if (typeof window.zoomEnabled !== 'undefined' && window.zoomEnabled) {
+                return;
+            }
+            
+            // Call original function if zoom is disabled
+            if (originalPlace2DMaterial) {
+                originalPlace2DMaterial(type, x, y);
+            }
+        };
+
+        // Override wheel event to check zoom enabled
+        document.addEventListener('DOMContentLoaded', function() {
+            // Make sure page12 is visible initially
+            showPage('page12');
+            
+            // Ensure initializeApp is called
+            if (typeof initializeApp === 'function') {
+                initializeApp();
+            }
+
+            // Initialize pan and zoom after app loads
+            setTimeout(() => {
+                if (typeof updateBuildAreaTransform === 'function') {
+                    updateBuildAreaTransform();
+                }
+            }, 100);
+        });
+
+        // Save project to JSON file
+        function saveProjectToJSON() {
+            if (building2D.length === 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'No Project to Save',
+                    text: 'Please place some materials before saving.',
+                    timer: 2000,
+                    timerProgressBar: true,
+                    showConfirmButton: false,
+                    toast: true,
+                    position: 'bottom-end',
+                    background: 'rgba(26, 26, 46, 0.95)',
+                    color: '#fff',
+                    iconColor: '#f59e0b'
+                });
+                return;
+            }
+
+            const budget = document.getElementById('builder2DBudget')?.value || 0;
+            
+            // Prepare project data
+            const projectData = {
+                version: '1.0',
+                savedAt: new Date().toISOString(),
+                budget: parseFloat(budget),
+                currentFloor: currentFloor,
+                materials: materials2D,
+                building: building2D.map(block => ({
+                    type: block.type,
+                    x: block.x,
+                    y: block.y,
+                    z: block.z,
+                    floor: block.floor || 1
+                }))
+            };
+
+            // Convert to JSON
+            const jsonString = JSON.stringify(projectData, null, 2);
+            
+            // Create blob and download
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `construmator-project-${Date.now()}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            // Show success notification
+            Swal.fire({
+                icon: 'success',
+                title: 'Project Saved!',
+                text: 'Your project has been saved to a JSON file.',
+                timer: 2000,
+                timerProgressBar: true,
+                showConfirmButton: false,
+                toast: true,
+                position: 'bottom-end',
+                background: 'rgba(26, 26, 46, 0.95)',
+                color: '#fff',
+                iconColor: '#10b981'
+            });
+        }
+
+        // Load project from JSON file
+        async function loadProjectFromJSON() {
+            const { value: file } = await Swal.fire({
+                title: 'Load Project',
+                text: 'Select a JSON project file to load',
+                input: 'file',
+                inputAttributes: {
+                    accept: '.json',
+                    'aria-label': 'Upload project JSON file'
+                },
+                showCancelButton: true,
+                confirmButtonText: 'Load Project',
+                cancelButtonText: 'Cancel',
+                confirmButtonColor: '#16a34a',
+                cancelButtonColor: '#6b7280',
+                background: 'rgba(26, 26, 46, 0.95)',
+                color: '#fff',
+                iconColor: '#ff00ff',
+                inputValidator: (value) => {
+                    if (!value) {
+                        return 'Please select a file!';
+                    }
+                }
+            });
+
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                try {
+                    const projectData = JSON.parse(event.target.result);
+                    
+                    // Validate project data
+                    if (!projectData.building || !Array.isArray(projectData.building)) {
+                        throw new Error('Invalid project file format');
+                    }
+
+                    // Clear current construction
+                    building2D.forEach(block => {
+                        if (block.element) {
+                            block.element.remove();
+                        }
+                    });
+                    building2D = [];
+                    materials2D = {};
+
+                    // Restore budget
+                    if (projectData.budget) {
+                        const budgetInput = document.getElementById('builder2DBudget');
+                        if (budgetInput) {
+                            budgetInput.value = projectData.budget;
+                        }
+                    }
+
+                    // Restore current floor
+                    if (projectData.currentFloor) {
+                        currentFloor = projectData.currentFloor;
+                        const floorSelector = document.getElementById('floorSelector');
+                        if (floorSelector) {
+                            floorSelector.value = currentFloor;
+                        }
+                    }
+
+                    // Get canvas container
+                    const canvasContainer = document.getElementById('build2DCanvas');
+                    if (!canvasContainer) {
+                        throw new Error('Canvas container not found');
+                    }
+
+                    // Hide placeholder
+                    const placeholder = document.getElementById('build2DPlaceholder');
+                    if (placeholder) {
+                        placeholder.style.display = 'none';
+                    }
+
+                    // Restore blocks
+                    projectData.building.forEach(blockData => {
+                        const blockElement = document.createElement('div');
+                        blockElement.className = 'true-2d-block';
+                        
+                        // Add icon for all materials including door
+                        blockElement.innerHTML = `<i class="${materialIcons[blockData.type] || 'fas fa-cube'}"></i>`;
+                        
+                        blockElement.style.color = materialColors[blockData.type] || '#fff';
+                        blockElement.style.backgroundColor = materialColors[blockData.type] || '#fff';
+                        blockElement.style.position = 'absolute';
+                        
+                        // Position blocks (all are 40x40px squares)
+                        blockElement.style.left = `${blockData.x}px`;
+                        blockElement.style.top = `${blockData.y}px`;
+                        
+                        blockElement.dataset.type = blockData.type;
+                        blockElement.dataset.stackLevel = 1;
+                        blockElement.dataset.x = blockData.x;
+                        blockElement.dataset.y = blockData.y;
+                        blockElement.dataset.z = blockData.z || 1;
+                        blockElement.dataset.floor = blockData.floor || 1;
+
+                        // Apply floor visibility
+                        updateBlockFloorVisibility(blockElement);
+
+                        // Add click handler (only delete if delete mode is active)
+                        blockElement.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            if (deleteMode && parseInt(blockElement.dataset.floor) === currentFloor) {
+                                removeBlock(blockElement, blockData.type, blockData.x, blockData.y, 1);
+                            }
+                        });
+
+                        canvasContainer.appendChild(blockElement);
+
+                        // Store in building array
+                        building2D.push({
+                            type: blockData.type,
+                            x: blockData.x,
+                            y: blockData.y,
+                            z: blockData.z || 1,
+                            floor: blockData.floor || 1,
+                            element: blockElement
+                        });
+
+                        // Update material count
+                        if (!materials2D[blockData.type]) {
+                            materials2D[blockData.type] = 0;
+                        }
+                        materials2D[blockData.type]++;
+                    });
+
+                    // Restore materials count if available
+                    if (projectData.materials) {
+                        materials2D = { ...projectData.materials };
+                    }
+
+                    // Update stats
+                    update2DStats();
+                    
+                    // Update floor visibility for all blocks
+                    building2D.forEach(block => {
+                        if (block.element) {
+                            updateBlockFloorVisibility(block.element);
+                        }
+                    });
+
+                    // Show success notification
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Project Loaded!',
+                        text: `Loaded ${projectData.building.length} blocks from saved project.`,
+                        timer: 2000,
+                        timerProgressBar: true,
+                        showConfirmButton: false,
+                        toast: true,
+                        position: 'bottom-end',
+                        background: 'rgba(26, 26, 46, 0.95)',
+                        color: '#fff',
+                        iconColor: '#10b981'
+                    });
+                } catch (error) {
+                    console.error('Error loading project:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Load Failed',
+                        text: 'Failed to load project. Please check if the file is valid.',
+                        timer: 3000,
+                        timerProgressBar: true,
+                        showConfirmButton: false,
+                        toast: true,
+                        position: 'bottom-end',
+                        background: 'rgba(26, 26, 46, 0.95)',
+                        color: '#fff',
+                        iconColor: '#dc2626'
+                    });
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // Show saved projects modal
+        async function showSavedProjectsModal() {
+            if (!window.auth || !window.auth.isLoggedIn()) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Login Required',
+                    text: 'Please login to view your saved projects.',
+                    timer: 2000,
+                    timerProgressBar: true,
+                    showConfirmButton: false,
+                    toast: true,
+                    position: 'bottom-end',
+                    background: 'rgba(26, 26, 46, 0.95)',
+                    color: '#fff',
+                    iconColor: '#f59e0b'
+                });
+                return;
+            }
+
+            const modal = new bootstrap.Modal(document.getElementById('savedProjectsModal'));
+            modal.show();
+
+            // Load and display projects
+            await loadAndDisplaySavedProjects();
+        }
+
+        // Load and display saved projects
+        async function loadAndDisplaySavedProjects() {
+            const projectsList = document.getElementById('savedProjectsList');
+            if (!projectsList) return;
+
+            projectsList.innerHTML = '<div class="text-center py-3"><i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--pink-accent);"></i><p class="mt-3" style="color: rgba(255, 255, 255, 0.7);">Loading projects...</p></div>';
+
+            try {
+                const projects = await loadUserSavedProjects();
+
+                if (projects.length === 0) {
+                    projectsList.innerHTML = `
+                        <div class="text-center py-5">
+                            <i class="fas fa-folder-open" style="font-size: 3rem; color: rgba(255, 255, 255, 0.3); margin-bottom: 1rem;"></i>
+                            <p style="color: rgba(255, 255, 255, 0.7);">No saved projects yet.</p>
+                            <p style="color: rgba(255, 255, 255, 0.5); font-size: 0.9rem;">Create a project and save it to see it here!</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Sort by most recent first
+                projects.sort((a, b) => new Date(b.savedAt) - new Date(a.savedAt));
+
+                projectsList.innerHTML = projects.map(project => {
+                    const savedDate = new Date(project.savedAt);
+                    const blockCount = project.building ? project.building.length : 0;
+                    const materialCount = project.materials ? Object.keys(project.materials).length : 0;
+                    
+                    return `
+                        <div class="modal-material-item" style="display: block; padding: 1.25rem; margin-bottom: 1rem; cursor: default;">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div style="flex: 1;">
+                                    <h6 style="color: #fff; font-weight: 700; margin-bottom: 0.5rem; font-size: 1.1rem;">${project.projectName || 'Unnamed Project'}</h6>
+                                    <div style="color: rgba(255, 255, 255, 0.6); font-size: 0.85rem;">
+                                        <div><i class="fas fa-calendar me-1"></i>${savedDate.toLocaleDateString()} ${savedDate.toLocaleTimeString()}</div>
+                                        <div class="mt-1"><i class="fas fa-cube me-1"></i>${blockCount} blocks · ${materialCount} material types</div>
+                                        ${project.budget ? `<div class="mt-1"><i class="fas fa-peso-sign me-1"></i>Budget: ₱${parseFloat(project.budget).toLocaleString()}</div>` : ''}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex gap-2 mt-3">
+                                <button onclick="loadBuilderProjectFromDatabase('${project.id}'); bootstrap.Modal.getInstance(document.getElementById('savedProjectsModal')).hide();" 
+                                        class="nav-action-btn" style="flex: 1; background: var(--blue-accent); border-color: var(--blue-accent); padding: 0.5rem 1rem; font-size: 0.9rem;">
+                                    <i class="fas fa-folder-open me-1"></i>Load
+                                </button>
+                                <button onclick="deleteSavedProject('${project.id}')" 
+                                        class="nav-action-btn btn-clear" style="padding: 0.5rem 1rem; font-size: 0.9rem;">
+                                    <i class="fas fa-trash me-1"></i>Delete
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } catch (error) {
+                console.error('Error loading projects:', error);
+                projectsList.innerHTML = `
+                    <div class="text-center py-5">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 2rem; color: #dc2626; margin-bottom: 1rem;"></i>
+                        <p style="color: rgba(255, 255, 255, 0.7);">Error loading projects. Please try again.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Delete saved project
+        async function deleteSavedProject(projectId) {
+            Swal.fire({
+                title: 'Delete Project?',
+                text: 'Are you sure you want to delete this project? This action cannot be undone.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc2626',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'Cancel',
+                background: 'rgba(26, 26, 46, 0.95)',
+                color: '#fff',
+                iconColor: '#ff00ff'
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    const deleted = await deleteBuilderProject(projectId);
+                    if (deleted) {
+                        await loadAndDisplaySavedProjects();
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
+

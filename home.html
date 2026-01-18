@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Construmator - Smart Construction Material Estimator</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --pink-accent: #ff00ff;
+            --pink-light: #ff4dff;
+            --purple-dark: #6b2c91;
+            --purple-light: #9d4edd;
+            --blue-accent: #00d4ff;
+            --dark-bg: #0f0f1e;
+            --card-dark: #1a1a2e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark-bg);
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: rgba(15, 15, 30, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .navbar-brand:hover {
+            color: #fff !important;
+            text-decoration: none;
+            transform: none;
+        }
+
+        .logo-img {
+            height: 40px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .search-bar {
+            max-width: 300px;
+            position: relative;
+        }
+
+        .search-bar input {
+            background: rgba(26, 26, 46, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            padding: 0.6rem 1rem 0.6rem 2.5rem;
+            color: #fff;
+            width: 100%;
+            font-size: 0.9rem;
+        }
+
+        .search-bar input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--pink-accent);
+            box-shadow: 0 0 0 2px rgba(255, 0, 255, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.9rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8) !important;
+            font-weight: 500;
+            margin: 0 0.5rem;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--pink-accent) !important;
+        }
+
+        .btn-get-started {
+            background: rgba(26, 26, 46, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            padding: 0.6rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-get-started:hover {
+            background: var(--pink-accent);
+            border-color: var(--pink-accent);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 0, 255, 0.3);
+        }
+
+        /* Hero Section */
+        .hero-section {
+            padding: 120px 0 80px;
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+        }
+
+        .hero-card {
+            background: linear-gradient(135deg, var(--purple-dark) 0%, var(--pink-accent) 100%);
+            border-radius: 30px;
+            padding: 4rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(255, 0, 255, 0.2);
+        }
+
+        .hero-content-left {
+            color: #fff;
+        }
+
+        .welcome-text {
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-title .smart {
+            color: var(--pink-light);
+        }
+
+        .hero-description {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            max-width: 500px;
+        }
+
+        .btn-hero {
+            background: var(--pink-accent);
+            border: none;
+            color: #fff;
+            padding: 1rem 2.5rem;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all 0.3s;
+            box-shadow: 0 5px 20px rgba(255, 0, 255, 0.4);
+        }
+
+        .btn-hero:hover {
+            background: var(--pink-light);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 0, 255, 0.5);
+            color: #fff;
+        }
+
+        /* Space Illustration */
+        .space-illustration {
+            position: relative;
+            height: 500px;
+            width: 100%;
+        }
+
+        .planet {
+            position: absolute;
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .planet-1 {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, var(--purple-light), var(--pink-accent));
+            top: 20%;
+            right: 10%;
+            box-shadow: 0 0 30px rgba(255, 0, 255, 0.5);
+        }
+
+        .planet-1::after {
+            content: '';
+            position: absolute;
+            width: 150px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.3);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-20deg);
+            border-radius: 50%;
+        }
+
+        .planet-2 {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--blue-accent), #00a8cc);
+            top: 50%;
+            right: 30%;
+            box-shadow: 0 0 25px rgba(0, 212, 255, 0.5);
+            animation-delay: -2s;
+        }
+
+        .meteor {
+            position: absolute;
+            width: 4px;
+            height: 60px;
+            background: linear-gradient(180deg, var(--pink-accent), transparent);
+            border-radius: 50%;
+            animation: meteorFall 3s linear infinite;
+        }
+
+        .meteor-1 {
+            top: 10%;
+            right: 20%;
+            animation-delay: 0s;
+        }
+
+        .meteor-2 {
+            top: 30%;
+            right: 50%;
+            animation-delay: 1s;
+        }
+
+        .meteor-3 {
+            top: 5%;
+            right: 70%;
+            animation-delay: 2s;
+        }
+
+        @keyframes meteorFall {
+            0% {
+                transform: translateY(-100px) rotate(45deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(400px) rotate(45deg);
+                opacity: 0;
+            }
+        }
+
+        .grid-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 0, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 0, 255, 0.1) 1px, transparent 1px);
+            background-size: 30px 30px;
+            opacity: 0.3;
+        }
+
+        .character {
+            position: absolute;
+            bottom: 10%;
+            right: 15%;
+            width: 100px;
+            height: 120px;
+            z-index: 10;
+        }
+
+        .character-body {
+            position: relative;
+        }
+
+        .character-head {
+            width: 40px;
+            height: 40px;
+            background: var(--purple-light);
+            border-radius: 50%;
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .character-shirt {
+            width: 50px;
+            height: 50px;
+            background: #fff;
+            border-radius: 10px;
+            position: absolute;
+            top: 35px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .character-pants {
+            width: 45px;
+            height: 40px;
+            background: var(--blue-accent);
+            border-radius: 8px;
+            position: absolute;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .glow-source {
+            position: absolute;
+            bottom: 20px;
+            right: -20px;
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle, var(--pink-accent), transparent);
+            border-radius: 50%;
+            filter: blur(15px);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.2); opacity: 1; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* Section Styles */
+        .section {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .section-title .highlight {
+            color: var(--pink-accent);
+        }
+
+        /* About Us Section */
+        .about-section {
+            background: rgba(26, 26, 46, 0.3);
+        }
+
+        .about-content {
+            display: flex;
+            align-items: center;
+            gap: 4rem;
+        }
+
+        .about-text-content {
+            flex: 1;
+        }
+
+        .about-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, var(--pink-accent), var(--purple-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .about-title .highlight {
+            color: var(--pink-accent);
+        }
+
+        .about-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .about-icon-wrapper {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .about-icon {
+            font-size: 12rem;
+            color: var(--pink-accent);
+            animation: floatIcon 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 30px rgba(255, 0, 255, 0.5));
+        }
+
+        @keyframes floatIcon {
+            0%, 100% { 
+                transform: translateY(0px) rotate(0deg); 
+            }
+            25% { 
+                transform: translateY(-20px) rotate(5deg); 
+            }
+            50% { 
+                transform: translateY(-10px) rotate(-5deg); 
+            }
+            75% { 
+                transform: translateY(-15px) rotate(3deg); 
+            }
+        }
+
+        /* Features Section */
+        .feature-card {
+            background: rgba(26, 26, 46, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2.5rem;
+            transition: all 0.3s;
+            cursor: pointer;
+            height: 100%;
+            text-align: center;
+        }
+
+        .feature-card:hover {
+            border-color: var(--pink-accent);
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(255, 0, 255, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 3.5rem;
+            color: var(--pink-accent);
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .feature-description {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
+        }
+
+        /* How It Works Section */
+        .how-it-works-section {
+            background: rgba(26, 26, 46, 0.3);
+        }
+
+        .step-card {
+            background: rgba(26, 26, 46, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2.5rem;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .step-card:hover {
+            border-color: var(--pink-accent);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 0, 255, 0.2);
+        }
+
+        .step-number {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 50px;
+            background: var(--pink-accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #fff;
+            box-shadow: 0 5px 15px rgba(255, 0, 255, 0.4);
+        }
+
+        .step-icon {
+            font-size: 3rem;
+            color: var(--pink-accent);
+            margin: 2rem 0 1.5rem;
+        }
+
+        .step-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .step-description {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
+        }
+
+        /* Team Section */
+        .team-card {
+            background: rgba(26, 26, 46, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .team-card:hover {
+            border-color: var(--pink-accent);
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(255, 0, 255, 0.2);
+        }
+
+        .team-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--purple-light), var(--pink-accent));
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: #fff;
+            border: 4px solid var(--pink-accent);
+            box-shadow: 0 10px 30px rgba(255, 0, 255, 0.3);
+        }
+
+        .team-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .team-role {
+            color: var(--pink-accent);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .team-social {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .team-social a {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            transition: all 0.3s;
+        }
+
+        .team-social a:hover {
+            background: var(--pink-accent);
+            transform: translateY(-3px);
+        }
+
+        /* Footer */
+        .footer {
+            background: rgba(5, 5, 15, 0.95);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 3rem 0 2rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-brand {
+            margin-bottom: 1rem;
+        }
+
+        .footer-logo {
+            height: 50px;
+            width: auto;
+            margin-bottom: 1rem;
+        }
+
+        .footer-text {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
+        }
+
+        .footer-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--pink-accent);
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--pink-accent);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .hero-card {
+                padding: 3rem 2rem;
+            }
+
+            .space-illustration {
+                height: 400px;
+                margin-top: 2rem;
+            }
+
+            .search-bar {
+                max-width: 100%;
+                margin: 1rem 0;
+            }
+
+            .section-title {
+                font-size: 2.5rem;
+            }
+
+            .about-content {
+                flex-direction: column;
+                gap: 3rem;
+            }
+
+            .about-title {
+                font-size: 2.5rem;
+                text-align: center;
+            }
+
+            .about-icon {
+                font-size: 10rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .hero-card {
+                padding: 2rem 1.5rem;
+            }
+
+            .about-content {
+                flex-direction: column;
+                gap: 2rem;
+            }
+
+            .about-title {
+                font-size: 2rem;
+                text-align: center;
+            }
+
+            .about-text {
+                text-align: center;
+            }
+
+            .about-icon {
+                font-size: 8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img src="src/images/Construmator-Logo.png" alt="Construmator Logo" class="logo-img">
+                <span>CONSTRUMATOR</span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" style="border: 1px solid rgba(255,255,255,0.3); color: #fff;">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <!-- Navigation Links -->
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">About Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="rules-regulation.html">Rules & Guidelines</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#how-it-works">How It Works</a>
+                    </li>
+                    <li class="nav-item ms-2">
+                        <button class="btn btn-get-started">Get Started</button>
+                    </li>
+                    <li class="nav-item ms-2" id="authNavItem">
+                        <a href="pages/login.html" class="btn btn-get-started" style="text-decoration: none;">
+                            <i class="fas fa-sign-in-alt me-2"></i>Login
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section" id="home">
+        <div class="container">
+            <div class="hero-card">
+                <div class="row align-items-center">
+                    <!-- Left Content -->
+                    <div class="col-lg-6">
+                        <div class="hero-content-left">
+                            <p class="welcome-text">Welcome To Construmator</p>
+                            <h1 class="hero-title">
+                                <span class="smart">SMART</span><br>
+                                CONSTRUCTION<br>
+                                MATERIAL ESTIMATOR
+                            </h1>
+                            <p class="hero-description">
+                                Accurately estimate construction materials, costs, and budgets for your Philippine projects. Get instant calculations with real-time 2024 market pricing.
+                            </p>
+                            <button class="btn btn-hero" onclick="window.location.href='pages/features.html'" style="background: #ffb3ff; color: #fff;">
+                                Get Started Now
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Right Illustration -->
+                    <div class="col-lg-6">
+                        <div class="space-illustration">
+                            <div class="grid-lines"></div>
+                            
+                            <!-- Planets -->
+                            <div class="planet planet-1"></div>
+                            <div class="planet planet-2"></div>
+                            
+                            <!-- Meteors -->
+                            <div class="meteor meteor-1"></div>
+                            <div class="meteor meteor-2"></div>
+                            <div class="meteor meteor-3"></div>
+                            
+                            <!-- Character -->
+                            <div class="character">
+                                <div class="character-body">
+                                    <div class="character-head"></div>
+                                    <div class="character-shirt"></div>
+                                    <div class="character-pants"></div>
+                                    <div class="glow-source"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Us Section -->
+    <section class="section about-section" id="about">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-text-content">
+                    <h2 class="about-title">
+                        About <span class="highlight">Us</span>
+                    </h2>
+                    <p class="about-text">
+                        Construmator is a revolutionary construction material estimation platform designed specifically for the Philippine construction industry. We combine advanced algorithms with real-time market pricing to provide accurate material estimates, cost breakdowns, and budget planning for construction projects of all sizes.
+                    </p>
+                    <p class="about-text mt-4">
+                        Our mission is to empower builders, contractors, and project managers with the tools they need to make informed decisions and optimize their construction budgets. With cutting-edge technology and user-friendly interfaces, we're transforming how construction projects are planned and executed.
+                    </p>
+                </div>
+                <div class="about-icon-wrapper">
+                    <i class="fas fa-building about-icon"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- How It Works Section -->
+    <section class="section how-it-works-section" id="how-it-works">
+        <div class="container">
+            <h2 class="section-title">
+                How It <span class="highlight">Works</span>
+            </h2>
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-3">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <div class="step-icon">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
+                        <h3 class="step-title">Choose Method</h3>
+                        <p class="step-description">
+                            Select from Manual Input or 2D Builder to start your estimation.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <div class="step-icon">
+                            <i class="fas fa-edit"></i>
+                        </div>
+                        <h3 class="step-title">Enter Details</h3>
+                        <p class="step-description">
+                            Input your project dimensions, specifications, and budget requirements.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <div class="step-icon">
+                            <i class="fas fa-cogs"></i>
+                        </div>
+                        <h3 class="step-title">Calculate</h3>
+                        <p class="step-description">
+                            Our advanced algorithms process your data and generate accurate estimates.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="step-card">
+                        <div class="step-number">4</div>
+                        <div class="step-icon">
+                            <i class="fas fa-file-download"></i>
+                        </div>
+                        <h3 class="step-title">Get Results</h3>
+                        <p class="step-description">
+                            Receive detailed material lists, cost breakdowns, and budget analysis.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="section" id="team">
+        <div class="container">
+            <h2 class="section-title">
+                Our <span class="highlight">Team</span>
+            </h2>
+            <div class="row g-4 justify-content-center">
+                <div class="col-md-6 col-lg-4">
+                    <div class="team-card">
+                        <div class="team-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <h3 class="team-name">Kim Antoinette Pasno</h3>
+                        <p class="team-role">Member 1</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="team-card">
+                        <div class="team-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <h3 class="team-name">Nicole Dastas</h3>
+                        <p class="team-role">Member 2</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="team-card">
+                        <div class="team-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <h3 class="team-name">Rizelle Ramos</h3>
+                        <p class="team-role">Member 3</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="team-card">
+                        <div class="team-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <h3 class="team-name">Aevy Allynia Condicion</h3>
+                        <p class="team-role">Member 4</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="team-card">
+                        <div class="team-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <h3 class="team-name">Wala? sino kaya?</h3>
+                        <p class="team-role">Member 5</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div>
+                    <div class="footer-brand">
+                        <img src="src/images/Construmator-Logo.png" alt="Construmator Logo" class="footer-logo">
+                        <p class="footer-text">
+                            Smart Construction Material Estimator for the Philippine construction industry. Get accurate estimates and optimize your project budgets.
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="footer-title">Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#features">Rules & Guidelines</a></li>
+                        <li><a href="#how-it-works">How It Works</a></li>
+                        <li><a href="#team">Team</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="footer-title">Features</h4>
+                    <ul class="footer-links">
+                        <li><a href="pages/manual.html">Manual Input</a></li>
+                        <li><a href="pages/builder.html">2D Builder</a></li>
+                        <li><a href="rules-regulation.html">Rules & Guidelines</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="footer-title">Contact</h4>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-envelope me-2"></i>info@construmator.com</li>
+                        <li><i class="fas fa-phone me-2"></i>+63 123 456 7890</li>
+                        <li><i class="fas fa-map-marker-alt me-2"></i>Manila, Philippines</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Construmator. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Auth JS -->
+    <script src="script/auth.js"></script>
+    
+    <script>
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    const offsetTop = target.offsetTop - 80;
+                    window.scrollTo({
+                        top: offsetTop,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Get Started button functionality
+        document.querySelectorAll('.btn-get-started').forEach(btn => {
+            if (!btn.closest('#authNavItem')) {
+                btn.addEventListener('click', function() {
+                    window.location.href = 'pages/features.html';
+                });
+            }
+        });
+
+        // Update navigation based on login status
+        function updateAuthNav() {
+            const authNavItem = document.getElementById('authNavItem');
+            if (authNavItem && window.auth) {
+                if (window.auth.isLoggedIn()) {
+                    const user = window.auth.getCurrentUser();
+                    const displayName = user.name || user.email;
+                    authNavItem.innerHTML = `
+                        <div class="dropdown">
+                            <button class="btn btn-get-started dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 0.85rem; padding: 0.5rem 1rem;">
+                                <i class="fas fa-user me-1" style="font-size: 0.8rem;"></i><span>${displayName}</span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown" style="background: rgba(26, 26, 46, 0.95); border: 1px solid rgba(255, 255, 255, 0.1); min-width: 200px;">
+                                <li class="px-3 py-2" style="border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                                    <small class="text-white-50">Signed in as</small><br>
+                                    <strong class="text-white">${user.name || user.email}</strong>
+                                </li>
+                                ${user.userType === 'admin' ? '<li><a class="dropdown-item text-white" href="pages/admin/admin.html" style="color: rgba(255, 255, 255, 0.8) !important; background-color: transparent !important;" onmouseover="this.style.backgroundColor=\'transparent\'" onmouseout="this.style.backgroundColor=\'transparent\'"><i class="fas fa-shield-alt me-2"></i>Admin Panel</a></li>' : ''}
+                                <li><a class="dropdown-item text-white" href="#" style="color: rgba(255, 255, 255, 0.8) !important; background-color: transparent !important;" onmouseover="this.style.backgroundColor='transparent'" onmouseout="this.style.backgroundColor='transparent'"><i class="fas fa-folder me-2"></i>My Projects</a></li>
+                                <li><hr class="dropdown-divider" style="border-color: rgba(255, 255, 255, 0.1);"></li>
+                                <li><a class="dropdown-item text-white" href="#" onclick="window.auth.logout(); return false;" style="color: rgba(255, 255, 255, 0.8) !important; background-color: transparent !important;" onmouseover="this.style.backgroundColor='transparent'" onmouseout="this.style.backgroundColor='transparent'"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                            </ul>
+                        </div>
+                    `;
+                } else {
+                    authNavItem.innerHTML = `
+                        <a href="pages/login.html" class="btn btn-get-started" style="text-decoration: none;">
+                            <i class="fas fa-sign-in-alt me-2"></i>Login
+                        </a>
+                    `;
+                }
+            }
+        }
+
+        // Initialize auth navigation
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', updateAuthNav);
+        } else {
+            updateAuthNav();
+        }
+    </script>
+</body>
+</html>
